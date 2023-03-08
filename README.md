@@ -1,7 +1,7 @@
 # IMovieLover
 
 ## Sobre
-Descubra o nome do filme com facilidade usando nossa API integrada com o ChatGPT! 
+Descubra o nome do filme com facilidade usando essa API integrada com o ChatGPT! 
 <br>
 Basta informar o nome do ator ou alguma cena do filme e pronto. 
 
