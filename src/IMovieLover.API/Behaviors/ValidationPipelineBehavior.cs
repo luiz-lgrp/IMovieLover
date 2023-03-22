@@ -8,7 +8,7 @@ namespace IMovieLover.API.Behaviors
 {
     public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
-        where TResponse : Response
+        where TResponse : ErrorResponse
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
 
@@ -32,7 +32,7 @@ namespace IMovieLover.API.Behaviors
 
         private static Task<TResponse> ValidationResponse(IEnumerable<ValidationFailure> failures)
         {
-            var response = new Response();
+            var response = new ErrorResponse();
 
             foreach (var failure in failures)
             {

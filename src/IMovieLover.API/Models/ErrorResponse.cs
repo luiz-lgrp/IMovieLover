@@ -1,11 +1,11 @@
 ﻿namespace IMovieLover.API.Models
 {
-    public class Response
+    public class ErrorResponse
     {
         public List<string> Errors { get; set; }
         public bool Success { get { return !Errors.Any(); } }
 
-        public Response()
+        public ErrorResponse()
         {
             Errors = new List<string>();
         }
