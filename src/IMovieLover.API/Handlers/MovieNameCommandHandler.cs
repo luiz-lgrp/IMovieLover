@@ -7,30 +7,20 @@ using System.Net.Http.Headers;
 using IMovieLoverAPI.Models;
 using IMovieLover.API.Commands;
 using IMovieLover.API.Validations;
+using System.Net.Http;
 
 namespace IMovieLover.API.Handlers
 {
     public class MovieNameCommandHandler : IRequestHandler<MovieNameCommand, Choice?>
     {
-        private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
-
-        public MovieNameCommandHandler(HttpClient httpClient, IConfiguration configuration)
-        {
-            _httpClient = httpClient;
-            _configuration = configuration;
-        }
-
+        private readonly IHttpClientFactory _httpClientFactory;
+        
+        public MovieNameCommandHandler(IHttpClientFactory httpClientFactory) 
+            => _httpClientFactory = httpClientFactory;
+        
         public async Task<Choice?> Handle(MovieNameCommand request, CancellationToken cancellationToken)
         {
-                var validationResult = new MovieNameCommandValidation().Validate(request);
-
-                if (!validationResult.IsValid)
-                    return null;
-
-                var token = _configuration.GetValue<string>("ChatGptSecretKey");
-
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var client = _httpClientFactory.CreateClient("chatGpt");
 
                 var model = new ChatGptRequest(request.MessageRequest.prompt);
 
@@ -38,7 +28,7 @@ namespace IMovieLover.API.Handlers
 
                 var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PostAsync("https://api.openai.com/v1/completions", content);
+                var response = await client.PostAsync("completions", content);
 
                 var result = await response.Content.ReadFromJsonAsync<ChatGptResponse>();
 

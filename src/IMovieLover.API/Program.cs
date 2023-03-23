@@ -4,6 +4,7 @@ using IMovieLoverAPI.Controllers;
 using IMovieLover.API.Behaviors;
 using FluentValidation;
 using System.Reflection;
+using IMovieLover.API.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddHttpClient<WhatMovieNameController>();
+builder.Services.AddScoped<ChatGptAuthorizationHandler>();
+
+builder.Services.AddHttpClient<MovieNameCommandHandler>("chatGpt")
+    .AddHttpMessageHandler<ChatGptAuthorizationHandler>()
+    .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://api.openai.com/v1/"));
 
 builder.Services.AddControllers();
 
