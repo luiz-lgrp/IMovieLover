@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<ChatGptAuthorizationHandler>();
 
-builder.Services.AddHttpClient<MovieNameCommandHandler>("chatGpt")
+builder.Services.AddHttpClient<MovieNameCommandHandler>("ChatGpt")
     .AddHttpMessageHandler<ChatGptAuthorizationHandler>()
     .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://api.openai.com/v1/"));
 

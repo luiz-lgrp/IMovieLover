@@ -9,7 +9,7 @@ namespace IMovieLover.API.Validations
         public MovieNameCommandValidation()
         {
             RuleFor(command => command.MessageRequest.prompt)
-                .Must(prompt => prompt is not null && prompt.Length >= "Nome e informações do filme".Length + 15)
+                .Must(prompt => prompt.Length >= "Nome e informações do filme".Length + 15)
                 .WithMessage("Vamos lá, faça uma pergunta!");
         }
     }

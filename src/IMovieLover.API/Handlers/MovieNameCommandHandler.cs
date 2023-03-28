@@ -20,7 +20,7 @@ namespace IMovieLover.API.Handlers
         
         public async Task<Choice?> Handle(MovieNameCommand request, CancellationToken cancellationToken)
         {
-                var client = _httpClientFactory.CreateClient("chatGpt");
+                var client = _httpClientFactory.CreateClient("ChatGpt");
 
                 var model = new ChatGptRequest(request.MessageRequest.prompt);
 
