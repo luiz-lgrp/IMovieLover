@@ -2,17 +2,17 @@
 {
     public class ErrorResponse
     {
-        public List<string> Errors { get; set; }
-        public bool Success { get { return !Errors.Any(); } }
+        public string Error { get; set; }
 
         public ErrorResponse()
         {
-            Errors = new List<string>();
+            Error = string.Empty;
         }
 
         public void AddError(string errorMessage)
         {
-            Errors.Add(errorMessage);
+            Error = errorMessage;
         }
+
     }
 }

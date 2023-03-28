@@ -1,8 +1,7 @@
-﻿
+﻿using MediatR;
 using FluentValidation;
-using FluentValidation.Results;
 using IMovieLover.API.Models;
-using MediatR;
+using FluentValidation.Results;
 
 namespace IMovieLover.API.Behaviors
 {
@@ -10,35 +9,29 @@ namespace IMovieLover.API.Behaviors
         where TRequest : IRequest<TResponse>
         where TResponse : ErrorResponse
     {
-        private readonly IEnumerable<IValidator<TRequest>> _validators;
+        private readonly IValidator<TRequest> _validator;
 
-        public ValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators)
+        public ValidationPipelineBehavior(IValidator<TRequest> validator)
         {
-            _validators = validators;
+            _validator = validator;
         }
 
         public Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            var failures = _validators
-                .Select(validator => validator.Validate(request))
-                .SelectMany(result => result.Errors)
-                .Where(failure => failure is not null)
-                .ToList();
+            var validationResult = _validator.Validate(request);
+            var failure = validationResult.Errors.FirstOrDefault();
 
-            return failures.Any()
-                ? ValidationResponse(failures)
+            return failure is not null
+                ? ValidationResponse(failure)
                 : next();
         }
 
-        private static Task<TResponse> ValidationResponse(IEnumerable<ValidationFailure> failures)
+        private static Task<TResponse> ValidationResponse(ValidationFailure failure)
         {
             var response = new ErrorResponse();
 
-            foreach (var failure in failures)
-            {
-                response.AddError(failure.ErrorMessage);
-            }
-
+            response.AddError(failure.ErrorMessage);
+            
             return Task.FromResult(response as TResponse)!;
         }
     }

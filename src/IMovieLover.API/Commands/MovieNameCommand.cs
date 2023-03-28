@@ -4,7 +4,7 @@ using IMovieLoverAPI.Models;
 
 namespace IMovieLover.API.Commands
 {
-    public class MovieNameCommand : IRequest<Choice?> //não será nulo, pois vc está validando 
+    public class MovieNameCommand : IRequest<Choice?> 
     {
         public ChatGptRequest MessageRequest { get; set; }
 

@@ -23,9 +23,9 @@ namespace IMovieLoverAPI.Controllers
         {
             var message = await _mediator.Send(new MovieNameCommand(inputText));
 
-            if (message.Errors.Any())
+            if (message.Error.Any())
             {
-                return BadRequest(message.Errors);
+                return BadRequest(message.Error);
             }
 
             return Ok(message);
