@@ -23,6 +23,11 @@ namespace IMovieLoverAPI.Controllers
         {
             var message = await _mediator.Send(new MovieNameCommand(inputText));
 
+            if (message.Error.Any())
+            {
+                return BadRequest(message.Error);
+            }
+
             return Ok(message);
         }
     }
