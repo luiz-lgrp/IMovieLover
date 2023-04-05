@@ -1,8 +1,6 @@
-﻿using IMovieLover.API.Models;
-
-namespace IMovieLoverAPI.Models
+﻿namespace IMovieLoverAPI.Models
 {
-    public class Choice : ErrorResponse
+    public class Choice
     {
         public string text { get; set; }
         public int index { get; set; }
