@@ -29,7 +29,11 @@ namespace IMovieLoverAPI.Controllers
             }
             catch (ValidationException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                var error = ex.Message
+                    .Replace("Validation failed: \r\n -- MessageRequest.prompt: ", "")
+                    .Replace(" Severity: Error", "");
+
+                return BadRequest(new { message = error });
             }
         }
     }
