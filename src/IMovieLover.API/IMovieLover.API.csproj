@@ -7,6 +7,10 @@
     <UserSecretsId>fa9ddbac-aef9-4725-be4a-1d20bd815f4c</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Models\ErrorResponse.cs" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Azure.Core" Version="1.30.0" />
 		<PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />

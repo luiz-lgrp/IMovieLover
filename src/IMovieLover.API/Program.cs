@@ -1,10 +1,10 @@
-using MediatR;
-
-using IMovieLoverAPI.Controllers;
-using IMovieLover.API.Behaviors;
-using FluentValidation;
 using System.Reflection;
+using System.Net.Http.Headers;
 using IMovieLover.API.Handlers;
+using IMovieLover.API.Behaviors;
+
+using MediatR;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,11 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<ChatGptAuthorizationHandler>();
+builder.Services.AddHttpClient<MovieNameCommandHandler>("ChatGpt", client =>
+{
+    var token = builder.Configuration.GetValue<string>("ChatGptSecretKey");
 
-builder.Services.AddHttpClient<MovieNameCommandHandler>("ChatGpt")
-    .AddHttpMessageHandler<ChatGptAuthorizationHandler>()
-    .ConfigureHttpClient(client => client.BaseAddress = new Uri("https://api.openai.com/v1/"));
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+}).ConfigureHttpClient(client => client.BaseAddress = new Uri("https://api.openai.com/v1/"));
 
 builder.Services.AddControllers();
 
@@ -26,6 +28,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(typeof(Program));
 
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+
+builder.Services.AddValidatorsFromAssembly(typeof(IMovieLover.API.Behaviors.ValidationPipelineBehavior<,>).Assembly);
+
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using IMovieLoverAPI.Models;
 using IMovieLover.API.Commands;
+using FluentValidation;
 
 namespace IMovieLoverAPI.Controllers
 {
@@ -21,14 +22,19 @@ namespace IMovieLoverAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> MovieName(ChatGptRequest inputText)
         {
-            var message = await _mediator.Send(new MovieNameCommand(inputText));
-
-            if (message.Error.Any())
+            try
             {
-                return BadRequest(message.Error);
+                var message = await _mediator.Send(new MovieNameCommand(inputText));
+                return Ok(message);
             }
+            catch (ValidationException ex)
+            {
+                var error = ex.Message
+                    .Replace("Validation failed: \r\n -- MessageRequest.prompt: ", "")
+                    .Replace(" Severity: Error", "");
 
-            return Ok(message);
+                return BadRequest(new { message = error });
+            }
         }
     }
 }

@@ -1,38 +1,27 @@
 ﻿using MediatR;
 using FluentValidation;
-using IMovieLover.API.Models;
-using FluentValidation.Results;
 
 namespace IMovieLover.API.Behaviors
 {
     public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
-        where TResponse : ErrorResponse
     {
         private readonly IValidator<TRequest> _validator;
 
-        public ValidationPipelineBehavior(IValidator<TRequest> validator)
+        public ValidationPipelineBehavior(IValidator<TRequest> validator) 
+            => _validator = validator;
+        
+
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            _validator = validator;
-        }
+            var context = new ValidationContext<TRequest>(request);
 
-        public Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-        {
-            var validationResult = _validator.Validate(request);
-            var failure = validationResult.Errors.FirstOrDefault();
+            var validationResult = await _validator.ValidateAsync(context, cancellationToken);
 
-            return failure is not null
-                ? ValidationResponse(failure)
-                : next();
-        }
+            if (!validationResult.IsValid)
+                throw new ValidationException(validationResult.Errors);
 
-        private static Task<TResponse> ValidationResponse(ValidationFailure failure)
-        {
-            var response = new ErrorResponse();
-
-            response.AddError(failure.ErrorMessage);
-            
-            return Task.FromResult(response as TResponse)!;
+            return await next();
         }
     }
 }

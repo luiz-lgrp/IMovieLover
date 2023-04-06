@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 
+using IMovieLoverAPI.Models;
 using IMovieLover.API.Commands;
 
 namespace IMovieLover.API.Validations
@@ -9,8 +10,8 @@ namespace IMovieLover.API.Validations
         public MovieNameCommandValidation()
         {
             RuleFor(command => command.MessageRequest.prompt)
-                .Must(prompt => prompt.Length >= "Nome e informações do filme".Length + 15)
-                .WithMessage("Vamos lá, faça uma pergunta!");
+                .Must(prompt => prompt.Length >= ChatGptRequest.CONTEXT.Length + 15)
+                .WithMessage("A sua pergunta deve conter pelo menos quinze caracteres.");
         }
     }
 }

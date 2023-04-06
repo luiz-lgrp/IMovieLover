@@ -2,12 +2,9 @@
 
 using System.Text;
 using System.Text.Json;
-using System.Net.Http.Headers;
 
 using IMovieLoverAPI.Models;
 using IMovieLover.API.Commands;
-using IMovieLover.API.Validations;
-using System.Net.Http;
 
 namespace IMovieLover.API.Handlers
 {
@@ -32,7 +29,7 @@ namespace IMovieLover.API.Handlers
 
                 var result = await response.Content.ReadFromJsonAsync<ChatGptResponse>();
 
-                var promptResponse = result.choices.First();
+                var promptResponse = result?.choices.First();
 
                 if (promptResponse is null)
                 {
