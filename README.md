@@ -23,6 +23,9 @@ Pronto só rodar a aplicação!
  ## Conceitos Aplicados
  - SOLID Principles
  - Dependency Injection
+ - IHttClientFactory
 - Command Query Responsability Segregation (CQRS)
 - Mediatr
+- Validation Pipeline
+- FluentValidation
 
